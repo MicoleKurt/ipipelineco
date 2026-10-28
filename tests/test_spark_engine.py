@@ -25,5 +25,8 @@ def test_spark_matches_python(tmp_path):
     b = process_spark(p, COLS, ["id"], "updated_at", tmp_path / "sp")
     assert (a.read, a.kept, a.duplicates, len(a.rejected)) == (b.read, b.kept, b.duplicates, len(b.rejected))
     assert sorted(r["reason"] for r in a.rejected) == sorted(r["reason"] for r in b.rejected)
-    q = "select id, name, price, updated_at from read_parquet('{}') order by id"
-    assert duckdb.sql(q.format(a.parquet_glob)).fetchall() == duckdb.sql(q.format(b.parquet_glob)).fetchall()
+    # Spark writes UTC-adjusted timestamps; the warehouse casts to TIMESTAMP in UTC, so compare the same way.
+    con = duckdb.connect()
+    con.execute("SET TimeZone='UTC'")
+    q = "select id, name, price, updated_at::TIMESTAMP from read_parquet('{}') order by id"
+    assert con.execute(q.format(a.parquet_glob)).fetchall() == con.execute(q.format(b.parquet_glob)).fetchall()
