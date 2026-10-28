@@ -7,6 +7,7 @@
 **A reliability-first ingestion framework: sources to warehouse to dbt to one run report.**<br>
 Free on DuckDB. Runs on Postgres and Supabase. Ships a Snowflake adapter. One command shows every failure mode and how it is handled.
 
+[![CI](https://github.com/MicoleKurt/ipipelineco/actions/workflows/ci.yml/badge.svg)](https://github.com/MicoleKurt/ipipelineco/actions/workflows/ci.yml)
 ![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-3776ab?style=flat-square)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
 ![Warehouses](https://img.shields.io/badge/warehouses-DuckDB%20%C2%B7%20Postgres%20%C2%B7%20Supabase%20%C2%B7%20Snowflake-3fb97d?style=flat-square)
@@ -161,11 +162,11 @@ Built and run on Windows with Python 3.11.
 |---|---|
 | Ingest, MERGE, DLQ, drift, retries, quality checks, dbt build on DuckDB (9 models, 24 tests), HTML report | Run and tested (`pytest`, `ipipelineco demo`) |
 | Idempotent replay | Run and tested (content hash before = after) |
-| **Postgres adapter** | Run against a real PostgreSQL server (embedded, via `pgserver`): merge, idempotent replay, schema drift, transaction rollback, dead letters, and the full pipeline including `dbt build` (9 models, 24 tests). CI repeats this against Postgres 16 |
+| **Postgres adapter** | Run against a real PostgreSQL server (embedded, via `pgserver`): merge, idempotent replay, schema drift, transaction rollback, dead letters, and the full pipeline including `dbt build` (9 models, 24 tests). CI repeats this against Postgres 16 and passes |
 | **Supabase** | It is Postgres, so the adapter applies. **Not run against a live Supabase project.** The pooler note above comes from Supabase's documented behaviour, not from a test |
 | Snowflake SQL generation | Unit-tested. **Not run against a live Snowflake account**, and the adapter's `PUT`/`COPY`/`MERGE` execution has not been executed |
-| PySpark engine | Written. Its parity test with the Python engine is skipped on the build machine (no Java) and runs in CI on Java 17 |
-| Airflow DAG | Parse test runs in CI. Not run locally (Airflow does not install on Windows). `docker-compose.yml` is untested |
+| PySpark engine | Parity test with the Python engine (same rows kept, same rows rejected, same values) **passes in CI on Java 17**. Not run on the author's Windows machine, which has no Java |
+| Airflow DAG | The DAG parses and its dependencies match the task graph: **passes in CI** with Airflow 2.10. Never started as a live scheduler. `docker-compose.yml` is untested |
 | Kafka / Kinesis | **Not used.** A JSONL file stands in for a topic and models offsets, duplicates and late data, not a broker |
 
 Limits: the demo runs on thousands of rows, not billions. It is a reference implementation of the reliability patterns, not a benchmark or a production-proven platform.
