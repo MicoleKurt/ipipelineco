@@ -1,0 +1,17 @@
+# Airflow running the pipelineco DAG. Not exercised in the repo's CI: it is a starting point.
+#   docker compose up        then open http://localhost:8080  (user: admin, password printed in the logs)
+services:
+  airflow:
+    image: apache/airflow:2.10.5
+    command: standalone
+    ports: ["8080:8080"]
+    environment:
+      PIPELINECO_WORKDIR: /opt/airflow/pipelineco
+      PIPELINECO_WEBHOOK_URL: ""
+      _PIP_ADDITIONAL_REQUIREMENTS: "pipelineco @ file:///opt/airflow/src"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - .:/opt/airflow/src
+      - pipelineco-data:/opt/airflow/pipelineco
+volumes:
+  pipelineco-data:

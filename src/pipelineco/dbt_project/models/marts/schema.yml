@@ -1,0 +1,24 @@
+version: 2
+
+models:
+  - name: dim_customers
+    columns:
+      - name: customer_id
+        tests: [unique, not_null]
+  - name: fct_orders
+    columns:
+      - name: order_id
+        tests: [unique, not_null]
+      - name: customer_id
+        tests:
+          - relationships:
+              to: ref('dim_customers')
+              field: customer_id
+  - name: fct_daily_revenue
+    columns:
+      - name: order_date
+        tests: [unique, not_null]
+  - name: fct_funnel
+    columns:
+      - name: event_date
+        tests: [unique, not_null]

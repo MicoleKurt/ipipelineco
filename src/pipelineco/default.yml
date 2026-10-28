@@ -1,0 +1,66 @@
+# pipelineco default config: five sources, one warehouse, one dbt project.
+# {workdir} and {api_url} are filled in at run time.
+warehouse:
+  type: duckdb                      # duckdb | snowflake
+  database: "{workdir}/warehouse.duckdb"
+
+engine: python                      # python | spark
+
+retry:
+  attempts: 3
+  delay_s: 0.2
+  backoff: 2.0
+
+sla_s: 120                          # whole-pipeline SLA
+dq:
+  freshness_hours: 24
+  volume_ratio: 0.5                 # flag when a run is below 50% or above 200% of the median
+  volume_min_history: 3
+
+sources:
+  - name: customers
+    type: sqlite
+    options: { path: "{workdir}/sources/oltp.db", table: customers }
+    key: [id]
+    watermark: updated_at
+    columns: { id: BIGINT, name: VARCHAR, email: VARCHAR, country: VARCHAR, updated_at: TIMESTAMP }
+
+  - name: orders
+    type: sqlite
+    options: { path: "{workdir}/sources/oltp.db", table: orders }
+    key: [id]
+    watermark: updated_at
+    columns:
+      id: BIGINT
+      customer_id: BIGINT
+      status: VARCHAR
+      amount: DOUBLE
+      currency: VARCHAR
+      created_at: TIMESTAMP
+      updated_at: TIMESTAMP
+
+  - name: payments
+    type: api
+    options: { url: "{api_url}/payments", page_size: 100, api_key_env: PIPELINECO_API_KEY }
+    key: [payment_id]
+    watermark: updated_at
+    columns:
+      payment_id: BIGINT
+      order_id: BIGINT
+      method: VARCHAR
+      amount: DOUBLE
+      status: VARCHAR
+      updated_at: TIMESTAMP
+
+  - name: events
+    type: jsonl                     # stands in for a Kafka topic: offset-based, late data safe
+    options: { path: "{workdir}/sources/events.jsonl" }
+    key: [event_id]
+    columns: { event_id: VARCHAR, user_id: BIGINT, type: VARCHAR, ts: TIMESTAMP }
+
+  - name: products
+    type: csv
+    options: { directory: "{workdir}/sources/drops", pattern: "products_*.csv" }
+    key: [sku]
+    on_new_column: add              # add | fail | ignore
+    columns: { sku: VARCHAR, name: VARCHAR, category: VARCHAR, price: DOUBLE, stock: BIGINT }

@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>pipelineco run {{ run.run_id }}</title>
+<style>
+:root{--bg:#0e1117;--panel:#161b24;--line:#262d3b;--text:#e6e8ee;--mute:#9aa2b5;--ok:#3fb97d;--bad:#f0636b;--warn:#f2b04b;--info:#6ea8ff;--accent:#b48cff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 ui-sans-serif,Segoe UI,Roboto,sans-serif}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 16px 64px}
+h1{font-size:22px;margin:0 0 4px;letter-spacing:-.01em}
+h2{font-size:13px;text-transform:uppercase;letter-spacing:.09em;color:var(--mute);margin:34px 0 10px;font-weight:600}
+.sub{color:var(--mute);margin-bottom:20px}
+.pill{display:inline-block;padding:2px 10px;border-radius:99px;font-size:12px;font-weight:600;border:1px solid}
+.pill.success,.pill.pass{color:var(--ok);border-color:var(--ok);background:#10281d}
+.pill.failed,.pill.fail{color:var(--bad);border-color:var(--bad);background:#2d1517}
+.pill.warn,.pill.warning{color:var(--warn);border-color:var(--warn);background:#33260f}
+.pill.skip,.pill.skipped{color:var(--mute);border-color:#444b5c;background:#1b1f27}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.kpi b{display:block;font-size:24px;letter-spacing:-.02em}
+.kpi span{color:var(--mute);font-size:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;overflow-x:auto}
+table{border-collapse:collapse;width:100%}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{color:var(--mute);font-weight:600;font-size:12px}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+tr:last-child td{border-bottom:0}
+code,.mono{font-family:ui-monospace,Consolas,monospace;font-size:12.5px}
+.mono-wrap{white-space:normal;word-break:break-all;color:var(--mute)}
+.proof{border-color:var(--ok);background:#0f1f19}
+.alert{padding:7px 12px;border-left:3px solid var(--warn);background:#201b10;margin:6px 0;border-radius:0 8px 8px 0}
+.alert.error{border-color:var(--bad);background:#241315}
+footer{margin-top:40px;color:var(--mute);font-size:12px}
+</style>
+</head>
+<body><div class="wrap">
+<h1>pipelineco <span class="pill {{ run.status }}">{{ run.status }}</span></h1>
+<div class="sub mono">run {{ run.run_id }} - engine {{ engine }} - warehouse {{ warehouse }} - trigger {{ run.trigger }}</div>
+
+<div class="kpis">
+  <div class="kpi"><b>{{ '{:,}'.format(merged) }}</b><span>rows merged into the warehouse</span></div>
+  <div class="kpi"><b>{{ rejected }}</b><span>rows sent to the dead-letter table</span></div>
+  <div class="kpi"><b>{{ retries }}</b><span>task retries absorbed</span></div>
+  <div class="kpi"><b>{{ dq_pass }}/{{ dq_total }}</b><span>data quality checks passed</span></div>
+  {% if dbt %}<div class="kpi"><b>{{ dbt.models.pass }}+{{ dbt.tests.pass }}</b><span>dbt models + tests passed{% if dbt.models.fail or dbt.tests.fail %} ({{ dbt.models.fail + dbt.tests.fail }} failed){% endif %}</span></div>{% endif %}
+</div>
+
+{% if proof %}
+<h2>Idempotency proof</h2>
+<div class="card proof">
+  <b>Replayed <code>{{ proof.source }}</code> from scratch: the table is byte-for-byte the same.</b>
+  <table style="margin-top:8px"><tr><th></th><th class="n">rows</th><th>content fingerprint</th></tr>
+    <tr><td>before replay</td><td class="n">{{ proof.before.rows }}</td><td class="mono">{{ proof.before.hash }}</td></tr>
+    <tr><td>after replay</td><td class="n">{{ proof.after.rows }}</td><td class="mono">{{ proof.after.hash }}</td></tr></table>
+  <div class="sub" style="margin:8px 0 0">{{ proof.reread }} rows re-read, {{ proof.inserted }} inserted, {{ proof.updated }} rewritten with identical values.</div>
+</div>
+{% endif %}
+
+<h2>Task graph</h2>
+<div class="card">{{ dag_svg }}</div>
+
+<h2>Sources</h2>
+<div class="card"><table>
+<tr><th>source</th><th>mode</th><th class="n">extracted</th><th class="n">rejected</th><th class="n">duplicates</th><th class="n">inserted</th><th class="n">updated</th><th>watermark</th></tr>
+{% for s in sources %}<tr><td><b>{{ s.source }}</b></td><td>{{ s.mode }}</td><td class="n">{{ s.extracted }}</td><td class="n">{{ s.rejected }}</td><td class="n">{{ s.duplicates }}</td><td class="n">{{ s.inserted }}</td><td class="n">{{ s.updated }}</td><td class="mono">{{ s.watermark or '-' }}</td></tr>{% endfor %}
+</table></div>
+
+{% if alerts %}
+<h2>Alerts</h2>
+{% for a in alerts %}<div class="alert {{ a.level }}"><b>{{ a.level }}</b> - {{ a.message }}</div>{% endfor %}
+{% endif %}
+
+{% if drift %}
+<h2>Schema drift</h2>
+<div class="card"><table><tr><th>source</th><th>event</th><th>detail</th></tr>
+{% for d in drift %}<tr><td>{{ d.source }}</td><td><span class="pill warn">{{ d.kind }}</span></td><td class="mono">{{ d.detail }}</td></tr>{% endfor %}
+</table></div>
+{% endif %}
+
+<h2>Data quality</h2>
+<div class="card"><table><tr><th>check</th><th>target</th><th>status</th><th>detail</th></tr>
+{% for c in dq %}<tr><td>{{ c.check_name }}</td><td class="mono">{{ c.target }}</td><td><span class="pill {{ c.status }}">{{ c.status }}</span></td><td>{{ c.detail }}</td></tr>{% endfor %}
+</table></div>
+
+{% if dlq %}
+<h2>Dead-letter table</h2>
+<div class="card"><table><tr><th>source</th><th>reason</th><th class="n">rows</th></tr>
+{% for d in dlq %}<tr><td>{{ d.source }}</td><td class="mono">{{ d.reason }}</td><td class="n">{{ d.n }}</td></tr>{% endfor %}
+</table>
+{% if dlq_samples %}<div class="sub" style="margin:10px 0 4px">Samples (kept verbatim so they can be fixed and replayed):</div>
+{% for d in dlq_samples %}<div class="mono mono-wrap">{{ d.source }} - {{ d.payload[:150] }}</div>{% endfor %}{% endif %}
+</div>
+{% endif %}
+
+<h2>Lineage</h2>
+<div class="card">{{ lineage_svg }}</div>
+
+<h2>Recent runs</h2>
+<div class="card"><table><tr><th>run</th><th>status</th><th>started (UTC)</th></tr>
+{% for h in history %}<tr><td class="mono">{{ h.run_id }}</td><td><span class="pill {{ h.status }}">{{ h.status }}</span></td><td>{{ h.started_at }}</td></tr>{% endfor %}
+</table></div>
+
+<footer>Generated by pipelineco. This file is self-contained: no scripts, no external requests.</footer>
+</div></body></html>

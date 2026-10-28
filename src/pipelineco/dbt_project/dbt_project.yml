@@ -1,0 +1,17 @@
+name: pipelineco
+version: "0.1.0"
+config-version: 2
+profile: pipelineco
+model-paths: ["models"]
+macro-paths: ["macros"]
+target-path: "target"
+clean-targets: ["target"]
+
+models:
+  pipelineco:
+    staging:
+      +materialized: view
+      +schema: staging
+    marts:
+      +materialized: table
+      +schema: marts
