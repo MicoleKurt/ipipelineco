@@ -149,7 +149,7 @@ What was run when this was built, on Windows with Python 3.11 (the author's lapt
 | Idempotent replay | Run and tested (content hash before = after) |
 | Snowflake SQL generation | Unit-tested. **Not run against a live Snowflake account.** |
 | Snowflake adapter (`PUT`/`COPY`/`MERGE` execution) | Written, **not executed** |
-| PySpark engine | See the note below |
+| PySpark engine | Written. Its parity test against the Python engine **has not been run yet**: the build machine had no Java, so the test is skipped here. It runs in CI on Java 17 |
 | Airflow DAG | Parse test runs in CI (`airflow-dag` job). **Not run locally**, Airflow does not install on Windows. `docker-compose.yml` is untested |
 | Kafka / Kinesis | **Not used.** The JSONL file stands in for a topic and models offsets, duplicates and late data, not a broker |
 
