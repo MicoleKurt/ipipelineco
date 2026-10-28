@@ -1,0 +1,29 @@
+ipipelineco:
+  target: duckdb
+  outputs:
+    duckdb:
+      type: duckdb
+      path: "{{ env_var('IPIPELINECO_DB') }}"
+      threads: 1
+    # Needs `pip install 'ipipelineco[snowflake]'` and the SNOWFLAKE_* variables.
+    # Not exercised in this repo's CI: run it against your own account.
+    snowflake:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+      user: "{{ env_var('SNOWFLAKE_USER') }}"
+      password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
+      warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE') }}"
+      database: "{{ env_var('SNOWFLAKE_DATABASE') }}"
+      schema: staging
+      threads: 4
+    # Supabase / any Postgres. Needs `pip install 'ipipelineco[postgres]'` and the standard libpq
+    # variables (PGHOST, PGPORT, PGUSER, PGPASSWORD, PGDATABASE). Verified in CI against Postgres 16.
+    postgres:
+      type: postgres
+      host: "{{ env_var('PGHOST') }}"
+      port: "{{ env_var('PGPORT', '5432') | as_number }}"
+      user: "{{ env_var('PGUSER') }}"
+      password: "{{ env_var('PGPASSWORD') }}"
+      dbname: "{{ env_var('PGDATABASE', 'postgres') }}"
+      schema: staging
+      threads: 4

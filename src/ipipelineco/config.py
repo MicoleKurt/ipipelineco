@@ -65,7 +65,7 @@ class Config:
 
 
 def default_config_text() -> str:
-    return resources.files("pipelineco").joinpath("default.yml").read_text(encoding="utf-8")
+    return resources.files("ipipelineco").joinpath("default.yml").read_text(encoding="utf-8")
 
 
 def load_config(path: str | Path | None, workdir: str | Path, engine: str | None = None, **vars) -> Config:

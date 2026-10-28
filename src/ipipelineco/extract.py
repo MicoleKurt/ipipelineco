@@ -78,7 +78,7 @@ def extract_sqlite(cfg: Config, src: SourceCfg, since: str | None, out: Path) ->
 def extract_api(cfg: Config, src: SourceCfg, since: str | None, out: Path) -> Extraction:
     base = cfg.opt(src, "url")
     size = int(src.options.get("page_size", 100))
-    key = os.environ.get(src.options.get("api_key_env", "PIPELINECO_API_KEY"), "demo-key")
+    key = os.environ.get(src.options.get("api_key_env", "IPIPELINECO_API_KEY"), "demo-key")
     rows: list[dict] = []
     page: int | None = 1
     while page:

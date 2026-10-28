@@ -1,11 +1,11 @@
-"""Airflow binding for the pipelineco task graph.
+"""Airflow binding for the ipipelineco task graph.
 
-The graph itself lives in `pipelineco.pipeline.build_tasks`; this file only maps each task
+The graph itself lives in `ipipelineco.pipeline.build_tasks`; this file only maps each task
 to an Airflow operator and carries the reliability settings: retries with exponential
 backoff, a per-task SLA, and a failure callback that alerts.
 
-Environment: PIPELINECO_WORKDIR (default /opt/airflow/pipelineco) and optionally
-PIPELINECO_CONFIG, PIPELINECO_ENGINE, PIPELINECO_WEBHOOK_URL.
+Environment: IPIPELINECO_WORKDIR (default /opt/airflow/ipipelineco) and optionally
+IPIPELINECO_CONFIG, IPIPELINECO_ENGINE, IPIPELINECO_WEBHOOK_URL.
 """
 
 from __future__ import annotations
@@ -20,12 +20,12 @@ try:  # Airflow 2.x
 except ImportError:  # pragma: no cover - Airflow 3 moved it
     from airflow.providers.standard.operators.python import PythonOperator
 
-from pipelineco.config import load_config
-from pipelineco.pipeline import build_tasks, make_context
+from ipipelineco.config import load_config
+from ipipelineco.pipeline import build_tasks, make_context
 
-WORKDIR = os.environ.get("PIPELINECO_WORKDIR", "/opt/airflow/pipelineco")
-CONFIG = os.environ.get("PIPELINECO_CONFIG") or None
-ENGINE = os.environ.get("PIPELINECO_ENGINE") or None
+WORKDIR = os.environ.get("IPIPELINECO_WORKDIR", "/opt/airflow/ipipelineco")
+CONFIG = os.environ.get("IPIPELINECO_CONFIG") or None
+ENGINE = os.environ.get("IPIPELINECO_ENGINE") or None
 cfg = load_config(CONFIG, WORKDIR, engine=ENGINE)
 
 
@@ -59,7 +59,7 @@ default_args = {
 }
 
 with DAG(
-    dag_id="pipelineco",
+    dag_id="ipipelineco",
     description="Ingest sources into the warehouse, run dbt, check quality, publish the run report.",
     start_date=datetime(2026, 1, 1),
     schedule="@hourly",

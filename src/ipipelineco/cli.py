@@ -1,4 +1,4 @@
-"""pipelineco command line."""
+"""ipipelineco command line."""
 
 from __future__ import annotations
 
@@ -16,8 +16,8 @@ from .config import default_config_text, load_config
 app = typer.Typer(add_completion=False, no_args_is_help=True, help="Reliability-first ingestion: sources to warehouse to dbt to report.")
 console = Console()
 
-WORKDIR = typer.Option(Path(".pipelineco"), "--workdir", "-w", help="Folder for state, staging, dbt project and reports.")
-CONFIG = typer.Option(None, "--config", "-c", help="pipelineco.yml. Omit to use the bundled demo config.")
+WORKDIR = typer.Option(Path(".ipipelineco"), "--workdir", "-w", help="Folder for state, staging, dbt project and reports.")
+CONFIG = typer.Option(None, "--config", "-c", help="ipipelineco.yml. Omit to use the bundled demo config.")
 ENGINE = typer.Option(None, "--engine", "-e", help="python | spark")
 
 
@@ -30,7 +30,7 @@ def _root(version: bool = typer.Option(False, "--version", is_eager=True)):
 
 @app.command()
 def demo(
-    workdir: Path = typer.Option(Path("pipelineco-demo"), "--workdir", "-w"),
+    workdir: Path = typer.Option(Path("ipipelineco-demo"), "--workdir", "-w"),
     engine: str = typer.Option("python", "--engine", "-e", help="python | spark"),
     save_svg: Path = typer.Option(None, "--save-svg", help="Also save the terminal output as an SVG."),
 ):
@@ -40,12 +40,12 @@ def demo(
     rec = Console(record=bool(save_svg), width=100)
     path = run_demo(workdir, engine=engine, console=rec)
     if save_svg:
-        rec.save_svg(str(save_svg), title="pipelineco demo")
+        rec.save_svg(str(save_svg), title="ipipelineco demo")
     raise typer.Exit(0 if path.exists() else 1)
 
 
 @app.command()
-def init(path: Path = typer.Argument(Path("pipelineco.yml"))):
+def init(path: Path = typer.Argument(Path("ipipelineco.yml"))):
     """Write the default config to edit."""
     if path.exists():
         console.print(f"[red]{path} already exists[/]")

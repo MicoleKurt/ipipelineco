@@ -1,4 +1,4 @@
-"""`pipelineco demo`: three runs on generated sources, offline and free.
+"""`ipipelineco demo`: three runs on generated sources, offline and free.
 
 1. initial load        every source, with a flaky API, bad rows and duplicates in the data
 2. incremental load    new and updated rows, late events, a CSV drop with a new column
@@ -22,13 +22,13 @@ from .sources.generate import generate, paths
 from .sources.mockapi import ApiServer
 from .warehouse import open_warehouse
 
-MARKER = ".pipelineco-demo"
+MARKER = ".ipipelineco-demo"
 
 
 def _prepare(workdir: Path) -> None:
     if workdir.exists() and any(workdir.iterdir()):
         if not (workdir / MARKER).exists():
-            raise SystemExit(f"{workdir} exists and is not a pipelineco demo folder. Pick another --workdir or empty it.")
+            raise SystemExit(f"{workdir} exists and is not a ipipelineco demo folder. Pick another --workdir or empty it.")
         shutil.rmtree(workdir)
     workdir.mkdir(parents=True, exist_ok=True)
     (workdir / MARKER).write_text("safe to delete\n")
@@ -76,7 +76,7 @@ def run_demo(workdir: Path, engine: str = "python", console: Console | None = No
     _prepare(workdir)
     cfg = load_config(None, workdir, engine=engine, api_url="http://127.0.0.1:0")
     cfg.retry.delay_s = 0.3
-    console.print(Panel.fit("[bold]pipelineco demo[/]  sources -> warehouse -> dbt -> report\nOffline, free, DuckDB. Engine: " + engine, border_style="magenta"))
+    console.print(Panel.fit("[bold]ipipelineco demo[/]  sources -> warehouse -> dbt -> report\nOffline, free, DuckDB. Engine: " + engine, border_style="magenta"))
 
     s = generate(workdir, tick=0)
     console.print(

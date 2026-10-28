@@ -8,15 +8,15 @@ pytest.importorskip("airflow")
 
 from airflow.models import DagBag  # noqa: E402
 
-from pipelineco.config import load_config  # noqa: E402
-from pipelineco.pipeline import build_tasks  # noqa: E402
+from ipipelineco.config import load_config  # noqa: E402
+from ipipelineco.pipeline import build_tasks  # noqa: E402
 
 
 def test_dag_imports_and_matches_task_graph(tmp_path, monkeypatch):
-    monkeypatch.setenv("PIPELINECO_WORKDIR", str(tmp_path))
+    monkeypatch.setenv("IPIPELINECO_WORKDIR", str(tmp_path))
     bag = DagBag(dag_folder=str(Path(__file__).parent.parent / "dags"), include_examples=False)
     assert not bag.import_errors, bag.import_errors
-    dag = bag.dags["pipelineco"]
+    dag = bag.dags["ipipelineco"]
     expected = {t.name: set(t.deps) for t in build_tasks(load_config(None, tmp_path))}
     actual = {t.task_id: set(t.upstream_task_ids) for t in dag.tasks}
     assert actual == expected

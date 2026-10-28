@@ -1,4 +1,4 @@
-# pipelineco default config: five sources, one warehouse, one dbt project.
+# ipipelineco default config: five sources, one warehouse, one dbt project.
 # {workdir} and {api_url} are filled in at run time.
 warehouse:
   type: duckdb                      # duckdb | snowflake
@@ -41,7 +41,7 @@ sources:
 
   - name: payments
     type: api
-    options: { url: "{api_url}/payments", page_size: 100, api_key_env: PIPELINECO_API_KEY }
+    options: { url: "{api_url}/payments", page_size: 100, api_key_env: IPIPELINECO_API_KEY }
     key: [payment_id]
     watermark: updated_at
     columns:

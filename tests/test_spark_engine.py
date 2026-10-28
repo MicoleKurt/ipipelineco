@@ -3,7 +3,7 @@ import json
 import duckdb
 import pytest
 
-from pipelineco.engines import process_python, process_spark, spark_available
+from ipipelineco.engines import process_python, process_spark, spark_available
 
 pytestmark = pytest.mark.skipif(not spark_available(), reason="needs Java and pyspark")
 

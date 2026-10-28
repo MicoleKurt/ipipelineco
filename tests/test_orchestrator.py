@@ -1,7 +1,7 @@
 import pytest
 
-from pipelineco.errors import PermanentError
-from pipelineco.orchestrator import Task, run_tasks, topo_order
+from ipipelineco.errors import PermanentError
+from ipipelineco.orchestrator import Task, run_tasks, topo_order
 
 
 def runner(tasks, **kw):

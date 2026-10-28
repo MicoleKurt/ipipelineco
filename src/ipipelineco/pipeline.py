@@ -49,13 +49,17 @@ def task_ingest(src_name: str):
 
 
 def task_dbt(ctx: Context) -> None:
-    if ctx.cfg.warehouse.get("type", "duckdb") != "duckdb":
-        raise PermanentError("the bundled dbt task runs against DuckDB; for Snowflake run `dbt build --target snowflake`")
+    from .warehouse import DBT_TARGET
+
+    kind = ctx.cfg.warehouse.get("type", "duckdb")
+    target = DBT_TARGET.get(kind)
+    if target is None:
+        raise PermanentError(f"no dbt target mapped for warehouse {kind!r}; run dbt yourself or add it to DBT_TARGET")
     db = ctx.cfg.fmt(ctx.cfg.warehouse.get("database", "{workdir}/warehouse.duckdb"))
     with ctx.wh.released():
-        summary = run_dbt(ctx.cfg.workdir, db)
+        summary = run_dbt(ctx.cfg.workdir, db, target=target)
     ctx.dbt = summary
-    ctx.wh.set_meta(ctx.run_id, "dbt", {k: v for k, v in summary.items() if k != "nodes"} | {"nodes": summary["nodes"]})
+    ctx.wh.set_meta(ctx.run_id, "dbt", summary)
     if not summary["success"]:
         failed = [n["name"] for n in summary["nodes"] if n["status"] not in ("success", "pass", "warn")]
         raise PermanentError(f"dbt build failed: {', '.join(failed[:5])}")

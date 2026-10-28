@@ -3,8 +3,8 @@ import json
 import duckdb
 import pytest
 
-from pipelineco.engines import process_python, scan_columns
-from pipelineco.types import CastError, cast_value
+from ipipelineco.engines import process_python, scan_columns
+from ipipelineco.types import CastError, cast_value
 
 COLS = {"id": "BIGINT", "name": "VARCHAR", "price": "DOUBLE", "updated_at": "TIMESTAMP"}
 

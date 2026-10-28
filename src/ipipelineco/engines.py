@@ -125,7 +125,7 @@ def get_spark():
 
         _SPARK = (
             SparkSession.builder.master("local[2]")
-            .appName("pipelineco")
+            .appName("ipipelineco")
             .config("spark.ui.enabled", "false")
             .config("spark.sql.session.timeZone", "UTC")
             .config("spark.sql.shuffle.partitions", "4")

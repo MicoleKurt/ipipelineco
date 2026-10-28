@@ -3,7 +3,7 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "pipelineco"
+name = "ipipelineco"
 version = "0.1.0"
 description = "Reliability-first ingestion framework: sources to warehouse to dbt to run report. Runs free on DuckDB, ships a real Snowflake adapter."
 readme = "README.md"
@@ -23,18 +23,19 @@ dependencies = [
 
 [project.optional-dependencies]
 spark = ["pyspark>=3.5"]
+postgres = ["psycopg[binary]>=3.1", "dbt-postgres>=1.9,<2"]
 snowflake = ["snowflake-connector-python>=3.7", "dbt-snowflake>=1.8"]
 airflow = ["apache-airflow>=2.9,<3"]
-dev = ["pytest>=8", "ruff>=0.5", "pyspark>=3.5"]
+dev = ["pytest>=8", "ruff>=0.5", "pyspark>=3.5", "psycopg[binary]>=3.1"]
 
 [project.scripts]
-pipelineco = "pipelineco.cli:app"
+ipipelineco = "ipipelineco.cli:app"
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.package-data]
-pipelineco = ["default.yml", "templates/*.j2", "dbt_project/**/*"]
+ipipelineco = ["default.yml", "templates/*.j2", "dbt_project/**/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

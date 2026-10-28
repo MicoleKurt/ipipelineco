@@ -1,4 +1,4 @@
-from pipelineco.warehouse import snowflake_sql as s
+from ipipelineco.warehouse import snowflake_sql as s
 
 COLS = {"id": "BIGINT", "name": "VARCHAR", "updated_at": "TIMESTAMP"}
 

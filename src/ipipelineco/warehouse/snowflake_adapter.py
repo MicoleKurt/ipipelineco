@@ -1,4 +1,4 @@
-"""Snowflake adapter. Needs `pip install pipelineco[snowflake]` and your own account.
+"""Snowflake adapter. Needs `pip install ipipelineco[snowflake]` and your own account.
 
 Credentials come from environment variables, never from the config file:
 SNOWFLAKE_ACCOUNT, SNOWFLAKE_USER, SNOWFLAKE_PASSWORD (or SNOWFLAKE_PRIVATE_KEY_PATH),
@@ -21,11 +21,11 @@ from .base import MergeResult, Warehouse, utcnow
 class SnowflakeWarehouse(Warehouse):
     kind = "snowflake"
 
-    def __init__(self, cluster_by: dict[str, list[str]] | None = None, stage: str = "ops.pipelineco_stage"):
+    def __init__(self, cluster_by: dict[str, list[str]] | None = None, stage: str = "ops.ipipelineco_stage"):
         try:
             import snowflake.connector as sf
         except ImportError as exc:  # pragma: no cover - exercised only with the extra installed
-            raise RuntimeError("Snowflake support needs: pip install 'pipelineco[snowflake]'") from exc
+            raise RuntimeError("Snowflake support needs: pip install 'ipipelineco[snowflake]'") from exc
         missing = [v for v in ("SNOWFLAKE_ACCOUNT", "SNOWFLAKE_USER", "SNOWFLAKE_WAREHOUSE", "SNOWFLAKE_DATABASE") if v not in os.environ]
         if missing:
             raise RuntimeError(f"Missing environment variables: {', '.join(missing)}")
@@ -94,7 +94,7 @@ class SnowflakeWarehouse(Warehouse):
             self.execute(sql.add_column_sql(target, c, t))
 
     def merge_parquet(self, glob, target, columns, key, run_id):
-        tmp = f"{target.split('.')[0]}._pipelineco_tmp_{target.split('.')[1]}"
+        tmp = f"{target.split('.')[0]}._ipipelineco_tmp_{target.split('.')[1]}"
         self.execute(sql.create_stage_sql(self.stage))
         self.execute(sql.put_sql(glob, self.stage, run_id))
         self.execute(sql.create_temp_sql(tmp, target))

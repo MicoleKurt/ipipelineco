@@ -4,9 +4,9 @@ import pytest
 
 pytest.importorskip("dbt.cli.main")
 
-from pipelineco.pipeline import run_pipeline  # noqa: E402
-from pipelineco.sources.generate import generate, paths  # noqa: E402
-from pipelineco.sources.mockapi import ApiServer  # noqa: E402
+from ipipelineco.pipeline import run_pipeline  # noqa: E402
+from ipipelineco.sources.generate import generate, paths  # noqa: E402
+from ipipelineco.sources.mockapi import ApiServer  # noqa: E402
 
 
 def run(cfg, wh, **kw):

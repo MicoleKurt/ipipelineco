@@ -1,5 +1,5 @@
 """Alerts go to three places: the console, ops.alerts (so the report can show them), and an
-optional Slack-compatible webhook set with PIPELINECO_WEBHOOK_URL."""
+optional Slack-compatible webhook set with IPIPELINECO_WEBHOOK_URL."""
 
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ class AlertSink:
         self.wh = wh
         self.run_id = run_id
         self.console = console
-        self.webhook = webhook if webhook is not None else os.environ.get("PIPELINECO_WEBHOOK_URL")
+        self.webhook = webhook if webhook is not None else os.environ.get("IPIPELINECO_WEBHOOK_URL")
         self.sent: list[tuple[str, str]] = []
 
     def send(self, level: str, message: str) -> None:
@@ -25,7 +25,7 @@ class AlertSink:
             style = {"error": "bold red", "warning": "yellow"}.get(level, "cyan")
             self.console.print(f"    [{style}]ALERT {level.upper()}[/] {message}")
         if self.webhook:
-            body = json.dumps({"text": f"[pipelineco {level}] {message} (run {self.run_id})"}).encode()
+            body = json.dumps({"text": f"[ipipelineco {level}] {message} (run {self.run_id})"}).encode()
             req = urllib.request.Request(self.webhook, data=body, headers={"Content-Type": "application/json"})
             try:
                 urllib.request.urlopen(req, timeout=5).read()

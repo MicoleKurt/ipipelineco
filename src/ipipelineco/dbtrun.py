@@ -13,7 +13,7 @@ from .errors import PermanentError
 def project_dir(workdir: Path) -> Path:
     """Copy the packaged dbt project into the workdir so dbt can write target/ there."""
     dest = workdir / "dbt_project"
-    src = Path(str(resources.files("pipelineco").joinpath("dbt_project")))
+    src = Path(str(resources.files("ipipelineco").joinpath("dbt_project")))
     dest.mkdir(parents=True, exist_ok=True)
     for item in src.rglob("*"):
         rel = item.relative_to(src)
@@ -32,7 +32,7 @@ def run_dbt(workdir: Path, db_path: str, command: str = "build", target: str = "
     except ImportError as exc:  # pragma: no cover
         raise PermanentError("dbt is not installed: pip install dbt-duckdb") from exc
     proj = project_dir(workdir)
-    os.environ["PIPELINECO_DB"] = db_path
+    os.environ["IPIPELINECO_DB"] = db_path
     args = [
         command,
         "--project-dir", str(proj),

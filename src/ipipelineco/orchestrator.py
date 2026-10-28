@@ -1,7 +1,7 @@
 """A small task-graph runner with the reliability features the Airflow DAG also uses:
 dependencies, retries with exponential backoff, per-task and pipeline SLAs, upstream-failure
 skipping, and failure alerts. `pipeline.py` defines the tasks once; this module runs them
-locally, and `dags/pipelineco_dag.py` maps the same tasks onto Airflow operators.
+locally, and `dags/ipipelineco_dag.py` maps the same tasks onto Airflow operators.
 """
 
 from __future__ import annotations

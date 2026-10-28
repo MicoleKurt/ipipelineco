@@ -1,8 +1,8 @@
 import pytest
 
-from pipelineco.config import load_config
-from pipelineco.sources.generate import generate
-from pipelineco.warehouse import open_warehouse
+from ipipelineco.config import load_config
+from ipipelineco.sources.generate import generate
+from ipipelineco.warehouse import open_warehouse
 
 
 @pytest.fixture

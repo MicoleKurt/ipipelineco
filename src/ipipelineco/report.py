@@ -61,7 +61,7 @@ def collect(cfg: Config, wh: Warehouse, run_id: str) -> dict:
 
 def render(data: dict) -> str:
     env = Environment(autoescape=select_autoescape(default=True))
-    tpl = env.from_string(resources.files("pipelineco").joinpath("templates/report.html.j2").read_text(encoding="utf-8"))
+    tpl = env.from_string(resources.files("ipipelineco").joinpath("templates/report.html.j2").read_text(encoding="utf-8"))
     return tpl.render(**data)
 
 

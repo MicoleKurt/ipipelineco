@@ -3,11 +3,11 @@ import sqlite3
 
 import pytest
 
-from pipelineco.errors import DriftError, PermanentError, TransientError
-from pipelineco.extract import extract
-from pipelineco.ingest import ingest_source
-from pipelineco.sources.generate import generate, paths
-from pipelineco.sources.mockapi import ApiServer
+from ipipelineco.errors import DriftError, PermanentError, TransientError
+from ipipelineco.extract import extract
+from ipipelineco.ingest import ingest_source
+from ipipelineco.sources.generate import generate, paths
+from ipipelineco.sources.mockapi import ApiServer
 
 
 def test_sqlite_watermark_is_inclusive(cfg, tmp_path):
@@ -44,7 +44,7 @@ def test_api_retry_signal_and_pagination(cfg, tmp_path):
 
 
 def test_api_auth_failure_is_permanent(cfg, tmp_path, monkeypatch):
-    monkeypatch.setenv("PIPELINECO_API_KEY", "wrong")
+    monkeypatch.setenv("IPIPELINECO_API_KEY", "wrong")
     with ApiServer(paths(cfg.workdir)["payments"]) as api:
         cfg.vars["api_url"] = api.url
         with pytest.raises(PermanentError):

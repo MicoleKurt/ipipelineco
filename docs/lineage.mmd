@@ -9,28 +9,28 @@ flowchart LR
   n_raw_events["raw.events"]
   n_sys_products["CSV drops"]
   n_raw_products["raw.products"]
-  n_model_pipelineco_dim_customers["dim_customers"]
-  n_model_pipelineco_fct_daily_revenue["fct_daily_revenue"]
-  n_model_pipelineco_fct_funnel["fct_funnel"]
-  n_model_pipelineco_fct_orders["fct_orders"]
-  n_model_pipelineco_stg_customers["stg_customers"]
-  n_model_pipelineco_stg_events["stg_events"]
-  n_model_pipelineco_stg_orders["stg_orders"]
-  n_model_pipelineco_stg_payments["stg_payments"]
-  n_model_pipelineco_stg_products["stg_products"]
+  n_model_ipipelineco_dim_customers["dim_customers"]
+  n_model_ipipelineco_fct_daily_revenue["fct_daily_revenue"]
+  n_model_ipipelineco_fct_funnel["fct_funnel"]
+  n_model_ipipelineco_fct_orders["fct_orders"]
+  n_model_ipipelineco_stg_customers["stg_customers"]
+  n_model_ipipelineco_stg_events["stg_events"]
+  n_model_ipipelineco_stg_orders["stg_orders"]
+  n_model_ipipelineco_stg_payments["stg_payments"]
+  n_model_ipipelineco_stg_products["stg_products"]
   n_sys_customers --> n_raw_customers
   n_sys_orders --> n_raw_orders
   n_sys_payments --> n_raw_payments
   n_sys_events --> n_raw_events
   n_sys_products --> n_raw_products
-  n_model_pipelineco_stg_customers --> n_model_pipelineco_dim_customers
-  n_model_pipelineco_stg_orders --> n_model_pipelineco_dim_customers
-  n_model_pipelineco_fct_orders --> n_model_pipelineco_fct_daily_revenue
-  n_model_pipelineco_stg_events --> n_model_pipelineco_fct_funnel
-  n_model_pipelineco_stg_orders --> n_model_pipelineco_fct_orders
-  n_model_pipelineco_stg_payments --> n_model_pipelineco_fct_orders
-  n_raw_customers --> n_model_pipelineco_stg_customers
-  n_raw_events --> n_model_pipelineco_stg_events
-  n_raw_orders --> n_model_pipelineco_stg_orders
-  n_raw_payments --> n_model_pipelineco_stg_payments
-  n_raw_products --> n_model_pipelineco_stg_products
+  n_model_ipipelineco_stg_customers --> n_model_ipipelineco_dim_customers
+  n_model_ipipelineco_stg_orders --> n_model_ipipelineco_dim_customers
+  n_model_ipipelineco_fct_orders --> n_model_ipipelineco_fct_daily_revenue
+  n_model_ipipelineco_stg_events --> n_model_ipipelineco_fct_funnel
+  n_model_ipipelineco_stg_orders --> n_model_ipipelineco_fct_orders
+  n_model_ipipelineco_stg_payments --> n_model_ipipelineco_fct_orders
+  n_raw_customers --> n_model_ipipelineco_stg_customers
+  n_raw_events --> n_model_ipipelineco_stg_events
+  n_raw_orders --> n_model_ipipelineco_stg_orders
+  n_raw_payments --> n_model_ipipelineco_stg_payments
+  n_raw_products --> n_model_ipipelineco_stg_products

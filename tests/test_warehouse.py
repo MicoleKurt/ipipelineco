@@ -1,6 +1,6 @@
 import json
 
-from pipelineco.engines import process_python
+from ipipelineco.engines import process_python
 
 COLS = {"id": "BIGINT", "v": "VARCHAR", "updated_at": "TIMESTAMP"}
 

@@ -33,6 +33,7 @@ class MergeResult:
 
 class Warehouse(ABC):
     kind = "abstract"
+    ops_types: dict[str, str] = {}  # per-engine type overrides for the ops tables, e.g. {"DOUBLE": "DOUBLE PRECISION"}
 
     # --- engine-specific ---
     @abstractmethod
@@ -72,6 +73,8 @@ class Warehouse(ABC):
     # --- portable ---
     def init_ops(self) -> None:
         for name, ddl in OPS_TABLES.items():
+            for generic, native in self.ops_types.items():
+                ddl = ddl.replace(generic, native)
             schema = name.split(".")[0]
             self.execute(f"CREATE SCHEMA IF NOT EXISTS {schema}")
             self.execute(f"CREATE TABLE IF NOT EXISTS {name} ({ddl})")

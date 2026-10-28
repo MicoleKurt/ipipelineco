@@ -1,14 +1,14 @@
-name: pipelineco
+name: ipipelineco
 version: "0.1.0"
 config-version: 2
-profile: pipelineco
+profile: ipipelineco
 model-paths: ["models"]
 macro-paths: ["macros"]
 target-path: "target"
 clean-targets: ["target"]
 
 models:
-  pipelineco:
+  ipipelineco:
     staging:
       +materialized: view
       +schema: staging
