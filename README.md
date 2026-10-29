@@ -15,6 +15,7 @@ Free on DuckDB. Runs on Postgres and Supabase. Ships a Snowflake adapter. One co
 
 <br>
 
+
 <img src="docs/img/demo.svg" alt="Terminal output of ipipelineco demo: an API retry, rejected rows, schema drift and an idempotent replay proof" width="860">
 
 <sub>`ipipelineco demo`: a real 503 from the API is retried, bad rows are dead-lettered, a new column is absorbed, and a full replay leaves the table byte-for-byte identical.</sub>
